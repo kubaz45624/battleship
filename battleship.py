@@ -1,11 +1,10 @@
-# 1. functrion init board for players(size)
+# 1. functrion init board for players(size)+
 # 2. place ship on board
 # 3. shooting phase displaye player number and board. valid correct input. mark hited field
 # 4. game_mode function setup game options(single/multi, board size, ship sizes and number)
 # 5. AI can play
-# 6. 5 ships lengte 5, 4, 3, 3, 2
-# 7. difrent numbers of ship in difrent size of board
-import zipapp
+# 6. 5 ships lengte 5, 4, 3, 3, 2 +
+# 7. difrent numbers of ship in difrent size of board+
 def set_gameboard(board_size):
     #init board of various size
     game_board = []
@@ -53,21 +52,12 @@ def check_board(game_board, cor1, cor2, ship_size):
     return right_coor
 
 def check_ship_untouched(game_board, right_coor, ship_size):
-    """ for i in range(0, len(right_coor)):
-        if right_coor[i][0] == 1:
-            print(len(game_board))
-            if right_coor[i][1] == 1:
-                if game_board[right_coor[i][0]][right_coor[i][1]+1] == "X" or game_board[right_coor[i][0]+1][right_coor[i][1]] == "X":
-                    return False
-            elif right_coor[i][1] == (len(game_board) - 1):
-                print("S")
-                if game_board[right_coor[i][0]][right_coor[i][1]-1] == "X" or game_board[right_coor[i][0]+1][right_coor[i][1]] == "X":
-                    print("S")
-                    return False
-            else:
-                if game_board[right_coor[i][0]][right_coor[i][1]+1] == "X" or game_board[right_coor[i][0]+1][right_coor[i][1]] == "X" or game_board[right_coor[i][0]][right_coor[i][1]-1] == "X":
-                    return False """
-    if right_coor[0][0] == right_coor[len(right_coor)-1][0]:
+    #return True if no ship in range
+    if len(right_coor) == 0:
+        return False
+    
+    #check horizontally
+    elif right_coor[0][0] == right_coor[len(right_coor)-1][0]:
         if right_coor[0][0] == 1:
             if "".join(game_board[right_coor[0][0]+1][right_coor[0][1]:right_coor[len(right_coor)-1][1]+1]) != "0" * ship_size:
                 return False
@@ -77,6 +67,13 @@ def check_ship_untouched(game_board, right_coor, ship_size):
         else:
             if "".join(game_board[right_coor[0][0]-1][right_coor[0][1]:right_coor[len(right_coor)-1][1]+1]) != "0" * ship_size or "".join(game_board[right_coor[0][0]+1][right_coor[0][1]:right_coor[len(right_coor)-1][1]+1]) != "0" * ship_size:
                 return False
+
+        if right_coor[0][1] != 1 and game_board[right_coor[0][0]][right_coor[0][1]-1] == "X":
+            return False
+
+        if (right_coor[len(right_coor)-1][1] != len(game_board) - 1) and game_board[right_coor[0][0]][right_coor[len(right_coor)-1][1]+1] == "X":
+            return False
+    #check vertical
     else:
         if right_coor[0][1] == 1:
             if "".join([el[right_coor[0][1]+1] for el in game_board[right_coor[0][0]:(right_coor[len(right_coor)-1][0]+1)]]) != "0" * ship_size:
@@ -87,30 +84,54 @@ def check_ship_untouched(game_board, right_coor, ship_size):
         else:
             if "".join([el[right_coor[0][1]-1] for el in game_board[right_coor[0][0]:(right_coor[len(right_coor)-1][0]+1)]]) != "0" * ship_size or "".join([el[right_coor[0][1]+1] for el in game_board[right_coor[0][0]:(right_coor[len(right_coor)-1][0]+1)]]) != "0" * ship_size:
                 return False
+        
+        if right_coor[0][0] != 1 and game_board[right_coor[0][0]-1][right_coor[0][1]] == "X":
+            return False
+        
+        if right_coor[len(right_coor)-1][0] != len(game_board) - 1 and game_board[right_coor[len(right_coor)-1][0]+1][right_coor[0][1]] == "X":
+            return False
     return True
-def place_ships(game_board, player):
+
+def place_ships(game_board, player, board_size):
     # names, numbers and size of ship
-    """ carrier = [1, 5]
-    battleship = [1, 4]
-    cruiser = [1, 3]
-    submarine = [1, 3]
-    destroyer = [1, 2] """
-    #dict_of_ships = {"carrier": 5, "battleship": 4, "cruiser": 3, "submarine": 3, "destroyer": 2}
-    display_board(game_board)
-    
+    if board_size == 5:
+        dict_of_ships = {"CRUISER": 3, "SUBMARINE": 3, "DESTROYER": 2}
+    elif board_size == 6:
+        dict_of_ships = {"BATTLESHIP": 4, "CRUISER": 3, "SUBMARINE": 3, "DESTROYER": 2}
+    else:
+        dict_of_ships = {"CARRIER": 5, "BATTLESHIP": 4, "CRUISER": 3, "SUBMARINE": 3, "DESTROYER": 2}
 
-    #coordinates_ships = input(f"Place your ships on board {str(dict_of_ships)} (example: carrier A1 A5): ")
-    #while len(dict_of_ships) != 0:
-
+    while len(dict_of_ships) != 0:
+        print(1)
+        display_board(game_board)
+        coordinates_ships = input(f"Place your ships on board {str(dict_of_ships)} (example: CARRIER A1 A5): ").upper()
+        coor_list = coordinates_ships.split(" ")
+        while (coor_list[0] not in dict_of_ships.keys()) or len(coor_list) != 3:
+            print("Invalid input!")
+            coordinates_ships = input(f"Place your ships on board {str(dict_of_ships)} (example: CARRIER A1 A5): ").upper()
+            coor_list = coordinates_ships.split(" ")
+        
+        if not coor_list[1][1].isdigit() or not coor_list[2][1].isdigit():
+            continue
+        else:
+            coor_to_check = check_board(game_board, coor_list[1], coor_list[2], dict_of_ships[coor_list[0]])
+            if check_ship_untouched(game_board, coor_to_check, dict_of_ships[coor_list[0]]) == False:
+                print("Ships are too close!")
+            else:
+                for i in range(0, len(coor_to_check)):
+                    game_board[coor_to_check[i][0]][coor_to_check[i][1]] = "X"
+                dict_of_ships.pop(coor_list[0])
     
 
 
 s = set_gameboard(5)
+""" print(s)
+d = [[' ', '1', '2', '3', '4', '5'], ['A', '0', '0', '0', '0', '0'], ['B', '0', '0', '0', '0', '0'], ['C', '0', '0', '0', '0', '0'], ['D', '0', '0', '0', '0', '0'], ['E', '0', 'X', '0', '0', '0']]
+ss = check_board(d, "B2", "D2", 3)
+display_board(s)
+print(ss)
+print(check_ship_untouched(d, ss, 3)) """
+place_ships(s, 1, 5)
 print(s)
-g = [[' ', '1', '2', '3', '4', '5'], ['A', '0', '0', '0', '0', '0'], ['B', '0', '0', '0', '0', '0'], ['C', '0', '0', '0', 'X', '0'], ['D', '0', '0', '0', '0', '0'], ['E', '0', '0', '0', '0', '0']]
-d = check_board(s, "A3", "E3", 5)
-display_board(g)
-print(d)
-print(check_ship_untouched(g, d, 5))
 
 
