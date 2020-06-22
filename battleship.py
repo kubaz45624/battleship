@@ -3,6 +3,7 @@
 # 3. shooting phase displaye player number and board. valid correct input. mark hited field
 # 4. game_mode function setup game options(single/multi, board size, ship sizes and number)
 # 5. AI can play
+# 6. 5 ships lengte 5, 4, 3, 3, 2
 
 def set_gameboard(board_size):
     #init board of various size
@@ -22,8 +23,13 @@ def set_gameboard(board_size):
                     game_board[i].append(chr(i + 64))
     return game_board
 
+def display_board(game_board):
+    for i in range(len(game_board)):
+        print(" ".join(game_board[i]))
+
+def place_ships(game_board, player):
+    pass
 
 s = set_gameboard(7)
 
-for i in range(len(s)):
-    print(s[i])
+display_board(s)
