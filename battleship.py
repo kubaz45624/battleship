@@ -4,6 +4,7 @@
 # 4. game_mode function setup game options(single/multi, board size, ship sizes and number)
 # 5. AI can play
 # 6. 5 ships lengte 5, 4, 3, 3, 2
+# 7. difrent numbers of ship in difrent size of board
 import zipapp
 def set_gameboard(board_size):
     #init board of various size
@@ -28,6 +29,7 @@ def display_board(game_board):
         print(" ".join(game_board[i]))
 
 def check_board(game_board, cor1, cor2, ship_size):
+    #check for empty field in player coordinates
     cor1 = list(cor1)
     cor2 = list(cor2)
     cor1[0] = ord(cor1[0]) - 64
@@ -35,19 +37,57 @@ def check_board(game_board, cor1, cor2, ship_size):
     cor2[0] = ord(cor2[0]) - 64
     cor2[1] = int(cor2[1])
     right_coor = []
-
+    #check horizontally
     if cor1[0] == cor2[0]:
         if (cor1[1] + ship_size - 1 == cor2[1]) or (cor2[1] + ship_size - 1 == cor1[1]):
             if ("".join(game_board[cor1[0]][cor1[1]: (cor2[1]+1)]) == "0" * ship_size) or ("".join(game_board[cor1[0]][cor2[1]: (cor1[1]+1)]) == "0" * ship_size):
                 for i in range(min(cor1[1], cor2[1]), max(cor1[1], cor2[1])+1):
                     right_coor.append([cor1[0], i])
+    #check vertical
     elif cor1[1] == cor2[1]:
         if (cor1[0] + ship_size - 1 == cor2[0]) or (cor2[0] + ship_size - 1 == cor1[0]):
             if ("".join([el[cor1[1]] for el in game_board[cor1[0]:(cor2[0]+1)]]) == "0" * ship_size) or ("".join([el[cor1[1]] for el in game_board[cor2[0]:(cor1[0]+1)]]) == "0" * ship_size):
                 for i in range(min(cor1[0], cor2[0]), max(cor1[0], cor2[0])+1):
                     right_coor.append([i, cor1[1]])
-    print(right_coor)
+
     return right_coor
+
+def check_ship_untouched(game_board, right_coor, ship_size):
+    """ for i in range(0, len(right_coor)):
+        if right_coor[i][0] == 1:
+            print(len(game_board))
+            if right_coor[i][1] == 1:
+                if game_board[right_coor[i][0]][right_coor[i][1]+1] == "X" or game_board[right_coor[i][0]+1][right_coor[i][1]] == "X":
+                    return False
+            elif right_coor[i][1] == (len(game_board) - 1):
+                print("S")
+                if game_board[right_coor[i][0]][right_coor[i][1]-1] == "X" or game_board[right_coor[i][0]+1][right_coor[i][1]] == "X":
+                    print("S")
+                    return False
+            else:
+                if game_board[right_coor[i][0]][right_coor[i][1]+1] == "X" or game_board[right_coor[i][0]+1][right_coor[i][1]] == "X" or game_board[right_coor[i][0]][right_coor[i][1]-1] == "X":
+                    return False """
+    if right_coor[0][0] == right_coor[len(right_coor)-1][0]:
+        if right_coor[0][0] == 1:
+            if "".join(game_board[right_coor[0][0]+1][right_coor[0][1]:right_coor[len(right_coor)-1][1]+1]) != "0" * ship_size:
+                return False
+        elif right_coor[0][0] == len(game_board) - 1:
+            if "".join(game_board[right_coor[0][0]-1][right_coor[0][1]:right_coor[len(right_coor)-1][1]+1]) != "0" * ship_size:
+                return False
+        else:
+            if "".join(game_board[right_coor[0][0]-1][right_coor[0][1]:right_coor[len(right_coor)-1][1]+1]) != "0" * ship_size or "".join(game_board[right_coor[0][0]+1][right_coor[0][1]:right_coor[len(right_coor)-1][1]+1]) != "0" * ship_size:
+                return False
+    else:
+        if right_coor[0][1] == 1:
+            if "".join([el[right_coor[0][1]+1] for el in game_board[right_coor[0][0]:(right_coor[len(right_coor)-1][0]+1)]]) != "0" * ship_size:
+                return False
+        elif right_coor[0][1] == len(game_board) - 1:
+            if "".join([el[right_coor[0][1]-1] for el in game_board[right_coor[0][0]:(right_coor[len(right_coor)-1][0]+1)]]) != "0" * ship_size:
+                return False
+        else:
+            if "".join([el[right_coor[0][1]-1] for el in game_board[right_coor[0][0]:(right_coor[len(right_coor)-1][0]+1)]]) != "0" * ship_size or "".join([el[right_coor[0][1]+1] for el in game_board[right_coor[0][0]:(right_coor[len(right_coor)-1][0]+1)]]) != "0" * ship_size:
+                return False
+    return True
 def place_ships(game_board, player):
     # names, numbers and size of ship
     """ carrier = [1, 5]
@@ -65,9 +105,12 @@ def place_ships(game_board, player):
     
 
 
-s = set_gameboard(7)
-display_board(s)
-#place_ships(s, 1)
-print(check_board(s, "G4", "C5", 5))
+s = set_gameboard(5)
+print(s)
+g = [[' ', '1', '2', '3', '4', '5'], ['A', '0', '0', '0', '0', '0'], ['B', '0', '0', '0', '0', '0'], ['C', '0', '0', '0', 'X', '0'], ['D', '0', '0', '0', '0', '0'], ['E', '0', '0', '0', '0', '0']]
+d = check_board(s, "A3", "E3", 5)
+display_board(g)
+print(d)
+print(check_ship_untouched(g, d, 5))
 
 
