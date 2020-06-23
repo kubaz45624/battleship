@@ -138,17 +138,66 @@ def shooting_ships(game_board_display, player):
     ask_move = input("Choose empty field on board: ").upper()
 
     while ask_move not in possible_moves:
+        print("Invalid input!")
         ask_move = input("Choose empty field on board: ").upper()
     
     return ord(ask_move[0]) - 64, int(ask_move[1])
 
+def check_sunk_ship(game_board_display, row, col):
+    #check the coords of sunk ship
+    temp = []
+    row_1 = row
+    row_2 = row
+    col_1 = col
+    while row > 0:
+        row -= 1
+        if game_board_display[row][col] != "H":
+            break
+        temp.append([row, col])
+    while row_1 < len(game_board_display):
+        row_1 += 1
+        if game_board_display[row][col] != "H":
+            break
+        temp.append([row, col])
+    while col > 0:
+        col -= 1
+        if game_board_display[row_2][col] != "H":
+            break
+        temp.append([row_2, col])
+    while col_1 < len(game_board_display):
+        col_1 += 1
+        if game_board_display[row_2][col_1] != "H":
+            break
+        temp.append([row_2, col_1])
+    return temp
+
+def mark_move_on_board(game_board, game_board_display, player, row, col):
+    #mark move on game board
+    if game_board[row][col] == "X":
+        if check_ship_untouched(game_board, [[row, col]], 1) == False:
+            game_board_display[row][col] = "H"
+            game_board[row][col] = "H"
+            print("You've hit a ship!")
+        else:
+            coords_of_sunk = check_sunk_ship(game_board_display, row, col)
+            game_board_display[row][col] = "S"
+            #game_board[row][col] = "H"
+            for i in range(0, len(coords_of_sunk)):
+                game_board_display[coords_of_sunk[i][0]][coords_of_sunk[i][1]] = "S"
+            print("You've sunk a ship!")     
+    else:
+        game_board_display[row][col] == "M"
+        print("You've missed!")
 
 
 s = set_gameboard(5)
 print(s)
-d = [[' ', '1', '2', '3', '4', '5'], ['A', 'X', 'X', 'X', '0', '0'], ['B', '0', '0', '0', '0', '0'], ['C', 'X', '0', '0', '0', '0'], ['D', 'X', '0', '0', '0', '0'], ['E', 'X', '0', '0', 'X', 'X']]
+d = [[' ', '1', '2', '3', '4', '5'], ['A', 'H', 'X', 'H', '0', '0'], ['B', '0', '0', '0', '0', '0'], ['C', 'X', '0', '0', '0', '0'], ['D', 'X', '0', '0', '0', '0'], ['E', 'X', '0', '0', 'X', 'H']]
 
-print(shooting_ships(s, 1))
+#print(shooting_ships(s, 1))
 
+mark_move_on_board(d, d, 1, 1, 2)
+g = shooting_ships(d, 1)
+print(g[0])
 
 
