@@ -1,3 +1,4 @@
+import os
 # 1. functrion init board for players(size)+
 # 2. place ship on board
 # 3. shooting phase displaye player number and board. valid correct input. mark hited field
@@ -102,12 +103,17 @@ def place_ships(game_board, player, board_size):
         dict_of_ships = {"CARRIER": 5, "BATTLESHIP": 4, "CRUISER": 3, "SUBMARINE": 3, "DESTROYER": 2}
     #keep asking till ship in dict_of_ships
     while len(dict_of_ships) != 0:
+        os.system("cls")
+        print(f"Player {player}")
         display_board(game_board)
         coordinates_ships = input(f"Place your ships on board {str(dict_of_ships)} (example: CARRIER A1 A5): ").upper()
         coor_list = coordinates_ships.split(" ")
         #keep asking if incorrect ship name or wrong entered
         while (coor_list[0] not in dict_of_ships.keys()) or len(coor_list) != 3:
             print("Invalid input!")
+            os.system("cls")
+            print(f"Player {player}")
+            display_board(game_board)
             coordinates_ships = input(f"Place your ships on board {str(dict_of_ships)} (example: CARRIER A1 A5): ").upper()
             coor_list = coordinates_ships.split(" ")
         #check for size
@@ -139,6 +145,9 @@ def shooting_ships(game_board_display, player):
 
     while ask_move not in possible_moves:
         print("Invalid input!")
+        os.system("cls")
+        print(f"Player {player}")
+        display_board(game_board_display)
         ask_move = input("Choose empty field on board: ").upper()
     
     return ord(ask_move[0]) - 64, int(ask_move[1])
@@ -173,6 +182,8 @@ def check_sunk_ship(game_board_display, row, col):
 
 def mark_move_on_board(game_board, game_board_display, player, row, col):
     #mark move on game board
+    print(f"Player {player}")
+    display_board(game_board_display)
     if game_board[row][col] == "X":
         if check_ship_untouched(game_board, [[row, col]], 1) == False:
             game_board_display[row][col] = "H"
@@ -181,13 +192,19 @@ def mark_move_on_board(game_board, game_board_display, player, row, col):
         else:
             coords_of_sunk = check_sunk_ship(game_board_display, row, col)
             game_board_display[row][col] = "S"
-            #game_board[row][col] = "H"
+            game_board[row][col] = "H"
             for i in range(0, len(coords_of_sunk)):
                 game_board_display[coords_of_sunk[i][0]][coords_of_sunk[i][1]] = "S"
             print("You've sunk a ship!")     
     else:
         game_board_display[row][col] == "M"
         print("You've missed!")
+    
+def has_won(game_board, player):
+    for i in range(0, len(game_board)):
+        if "X" in game_board[i]:
+            return False
+    return True
 
 if __name__ == '__main__':
     s = set_gameboard(5)
