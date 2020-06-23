@@ -32,8 +32,29 @@ def battleship_game(game_mode, size, turn_limit = None):
         if battleship.has_won(player_1_game_board, 2) == True:
             print("Player 2 wins!")
             break
+
+def main_menu():
+    print("Welcome!")
     
+    game_options = input("Choose game mode:\n1. Single player\n2. Multiplayer\n")
+    while not game_options.isdigit() or (int(game_options) == 2 or int(game_options) == 1):
+        
+        game_options = input("Choose game mode:\n1. Single player\n2. Multiplayer\n")
+    
+    board_size = input("Choose board size 5-10: ")
+    while not board_size.isdigit():
+        if (int(board_size) >= 5 and int(board_size) <= 10):
+            break
+        board_size = input("Choose board size 5-10: ")
+    
+    turn_limit = input("Choose turn limit: ")
+    while not turn_limit.isdigit():
+        if (int(turn_limit) >= 5 and int(turn_limit) <= 50):
+            break
+        turn_limit = input("Choose turn limit: ")
+
+    print(game_options, board_size, turn_limit)
 
 
 if __name__ == '__main__':
-    battleship_game(2, 5)
+    main_menu()
