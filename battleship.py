@@ -1,4 +1,6 @@
 import os
+import time
+import sys
 # 1. functrion init board for players(size)+
 # 2. place ship on board
 # 3. shooting phase displaye player number and board. valid correct input. mark hited field
@@ -103,6 +105,7 @@ def place_ships(game_board, player, board_size):
         dict_of_ships = {"CARRIER": 5, "BATTLESHIP": 4, "CRUISER": 3, "SUBMARINE": 3, "DESTROYER": 2}
     #keep asking till ship in dict_of_ships
     while len(dict_of_ships) != 0:
+        time.sleep(1)
         os.system("cls")
         print(f"Player {player}")
         display_board(game_board)
@@ -111,10 +114,13 @@ def place_ships(game_board, player, board_size):
         #keep asking if incorrect ship name or wrong entered
         while (coor_list[0] not in dict_of_ships.keys()) or len(coor_list) != 3:
             print("Invalid input!")
+            time.sleep(1)
             os.system("cls")
             print(f"Player {player}")
             display_board(game_board)
             coordinates_ships = input(f"Place your ships on board {str(dict_of_ships)} (example: CARRIER A1 A5): ").upper()
+            if coordinates_ships == "QUIT":
+                sys.exit()
             coor_list = coordinates_ships.split(" ")
         #check for size
         if not coor_list[1][1] in game_board[0][1:] or not coor_list[2][1] in game_board[0][1:]:
@@ -145,59 +151,88 @@ def shooting_ships(game_board_display, player):
 
     while ask_move not in possible_moves:
         print("Invalid input!")
+        time.sleep(1)
         os.system("cls")
         print(f"Player {player}")
         display_board(game_board_display)
         ask_move = input("Choose empty field on board: ").upper()
+        if ask_move == "QUIT":
+            sys.exit()
     
     return ord(ask_move[0]) - 64, int(ask_move[1])
 
 def check_sunk_ship(game_board_display, row, col):
     #check the coords of sunk ship
     temp = []
+    temp_2 = []
     row_1 = row
     row_2 = row
     col_1 = col
     while row > 0:
         row -= 1
-        if game_board_display[row][col] != "H":
+        if game_board_display[row][col] == "0":
             break
-        temp.append([row, col])
-    while row_1 < len(game_board_display):
+        elif game_board_display[row][col] == "H":
+            temp.append([row, col])
+            temp_2.append([row, col])
+        elif game_board_display[row][col] == "X":
+            temp_2.append([row, col])
+    while row_1 < len(game_board_display) - 1:
         row_1 += 1
-        if game_board_display[row][col] != "H":
+        if game_board_display[row_1][col] == "0":
             break
-        temp.append([row, col])
+        elif game_board_display[row_1][col] == "H":
+            temp.append([row_1, col])
+            temp_2.append([row_1, col])
+        elif game_board_display[row_1][col] == "X":
+            temp_2.append([row_1, col])
     while col > 0:
         col -= 1
-        if game_board_display[row_2][col] != "H":
+        if game_board_display[row_2][col] == "0":
             break
-        temp.append([row_2, col])
-    while col_1 < len(game_board_display):
+        elif game_board_display[row_2][col] == "H":
+            temp.append([row_2, col])
+            temp_2.append([row_2, col])
+        elif game_board_display[row_2][col] == "X":
+            temp_2.append([row_2, col])
+    while col_1 < len(game_board_display) - 1:
         col_1 += 1
-        if game_board_display[row_2][col_1] != "H":
+        if game_board_display[row_2][col_1] == "0":
             break
-        temp.append([row_2, col_1])
+        if game_board_display[row_2][col_1] == "0":
+            break
+        elif game_board_display[row_2][col_1] == "H":
+            temp.append([row_2, col_1])
+            temp_2.append([row_2, col_1])
+        elif game_board_display[row_2][col_1] == "X":
+            temp_2.append([row_2, col-1])
+    
+    if len(temp) != len(temp_2):
+        return -1
     return temp
 
 def mark_move_on_board(game_board, game_board_display, player, row, col):
     #mark move on game board
-    print(f"Player {player}")
-    display_board(game_board_display)
     if game_board[row][col] == "X":
-        if check_ship_untouched(game_board, [[row, col]], 1) == False:
-            game_board_display[row][col] = "H"
-            game_board[row][col] = "H"
+        game_board_display[row][col] = "H"
+        game_board[row][col] = "H"
+        coords_of_sunk = check_sunk_ship(game_board, row, col)
+        if coords_of_sunk == -1:
+            print(f"Player {player}")
+            display_board(game_board_display)
             print("You've hit a ship!")
         else:
-            coords_of_sunk = check_sunk_ship(game_board_display, row, col)
             game_board_display[row][col] = "S"
             game_board[row][col] = "H"
             for i in range(0, len(coords_of_sunk)):
                 game_board_display[coords_of_sunk[i][0]][coords_of_sunk[i][1]] = "S"
+            print(f"Player {player}")
+            display_board(game_board_display)
             print("You've sunk a ship!")     
     else:
-        game_board_display[row][col] == "M"
+        game_board_display[row][col] = "M"
+        print(f"Player {player}")
+        display_board(game_board_display)
         print("You've missed!")
     
 def has_won(game_board, player):
@@ -208,13 +243,13 @@ def has_won(game_board, player):
 
 if __name__ == '__main__':
     s = set_gameboard(5)
-    print(s)
-    d = [[' ', '1', '2', '3', '4', '5'], ['A', 'H', 'X', 'H', '0', '0'], ['B', '0', '0', '0', '0', '0'], ['C', 'X', '0', '0', '0', '0'], ['D', 'X', '0', '0', '0', '0'], ['E', 'X', '0', '0', 'X', 'H']]
-
+    
+    d = [[' ', '1', '2', '3', '4', '5'], ['A', 'X', 'H', 'X', '0', 'H'], ['B', '0', '0', '0', '0', '0'], ['C', 'X', '0', '0', '0', '0'], ['D', 'X', '0', '0', 'H', 'X'], ['E', 'X', '0', '0', '0', '0']]
+    g = [[' ', '1', '2', '3', '4', '5'], ['A', '0', 'H', 'X', '0', 'H'], ['B', '0', '0', '0', '0', '0'], ['C', 'X', '0', '0', '0', '0'], ['D', 'X', '0', '0', 'H', 'X'], ['E', 'X', '0', '0', '0', '0']]
     #print(shooting_ships(s, 1))
 
-    mark_move_on_board(d, d, 1, 1, 2)
-    g = shooting_ships(d, 1)
-    print(g[0])
+    
+    mark_move_on_board(d, g, 2, 1, 3)
+
 
 
