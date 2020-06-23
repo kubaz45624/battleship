@@ -189,15 +189,15 @@ def mark_move_on_board(game_board, game_board_display, player, row, col):
         game_board_display[row][col] == "M"
         print("You've missed!")
 
+if __name__ == '__main__':
+    s = set_gameboard(5)
+    print(s)
+    d = [[' ', '1', '2', '3', '4', '5'], ['A', 'H', 'X', 'H', '0', '0'], ['B', '0', '0', '0', '0', '0'], ['C', 'X', '0', '0', '0', '0'], ['D', 'X', '0', '0', '0', '0'], ['E', 'X', '0', '0', 'X', 'H']]
 
-s = set_gameboard(5)
-print(s)
-d = [[' ', '1', '2', '3', '4', '5'], ['A', 'H', 'X', 'H', '0', '0'], ['B', '0', '0', '0', '0', '0'], ['C', 'X', '0', '0', '0', '0'], ['D', 'X', '0', '0', '0', '0'], ['E', 'X', '0', '0', 'X', 'H']]
+    #print(shooting_ships(s, 1))
 
-#print(shooting_ships(s, 1))
-
-mark_move_on_board(d, d, 1, 1, 2)
-g = shooting_ships(d, 1)
-print(g[0])
+    mark_move_on_board(d, d, 1, 1, 2)
+    g = shooting_ships(d, 1)
+    print(g[0])
 
 
