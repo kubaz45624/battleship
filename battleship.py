@@ -94,23 +94,23 @@ def check_ship_untouched(game_board, right_coor, ship_size):
 
 def place_ships(game_board, player, board_size):
     # names, numbers and size of ship
-    if board_size == 5:
+    if board_size < 7:
         dict_of_ships = {"CRUISER": 3, "SUBMARINE": 3, "DESTROYER": 2}
-    elif board_size == 6:
+    elif board_size < 9:
         dict_of_ships = {"BATTLESHIP": 4, "CRUISER": 3, "SUBMARINE": 3, "DESTROYER": 2}
     else:
         dict_of_ships = {"CARRIER": 5, "BATTLESHIP": 4, "CRUISER": 3, "SUBMARINE": 3, "DESTROYER": 2}
-
+    #keep asking till ship in dict_of_ships
     while len(dict_of_ships) != 0:
         display_board(game_board)
         coordinates_ships = input(f"Place your ships on board {str(dict_of_ships)} (example: CARRIER A1 A5): ").upper()
         coor_list = coordinates_ships.split(" ")
-
+        #keep asking if incorrect ship name or wrong entered
         while (coor_list[0] not in dict_of_ships.keys()) or len(coor_list) != 3:
             print("Invalid input!")
             coordinates_ships = input(f"Place your ships on board {str(dict_of_ships)} (example: CARRIER A1 A5): ").upper()
             coor_list = coordinates_ships.split(" ")
-        
+        #check for size
         if not coor_list[1][1] in game_board[0][1:] or not coor_list[2][1] in game_board[0][1:]:
             print("Invalid input!")
         elif not coor_list[1][0] in [el[0] for el in game_board[1:]] or not coor_list[2][0] in [el[0] for el in game_board[1:]]:
@@ -125,15 +125,30 @@ def place_ships(game_board, player, board_size):
                 for i in range(0, len(coor_to_check)):
                     game_board[coor_to_check[i][0]][coor_to_check[i][1]] = "X"
                 dict_of_ships.pop(coor_list[0])
+
+def shooting_ships(game_board_display, player):
+    possible_moves = []
+    for i in range(0, len(game_board_display)):
+        for j in range(0, len(game_board_display[i])):
+            if game_board_display[i][j] == "0":
+                possible_moves.append(f"{chr(i + 64)}{j}")
+    print(f"Player {player}")
+    display_board(game_board_display)
     
+    ask_move = input("Choose empty field on board: ").upper()
+
+    while ask_move not in possible_moves:
+        ask_move = input("Choose empty field on board: ").upper()
+    
+    return ord(ask_move[0]) - 64, int(ask_move[1])
+
 
 
 s = set_gameboard(5)
-""" print(s)
-d = [[' ', '1', '2', '3', '4', '5'], ['A', '0', '0', '0', '0', '0'], ['B', '0', '0', '0', '0', '0'], ['C', '0', '0', '0', '0', '0'], ['D', '0', '0', '0', '0', '0'], ['E', '0', 'X', '0', '0', '0']]
-ss = check_board(d, "B2", "D2", 3)
-display_board(s)
-print(ss)
-print(check_ship_untouched(d, ss, 3)) """
-place_ships(s, 1, 5)
 print(s)
+d = [[' ', '1', '2', '3', '4', '5'], ['A', 'X', 'X', 'X', '0', '0'], ['B', '0', '0', '0', '0', '0'], ['C', 'X', '0', '0', '0', '0'], ['D', 'X', '0', '0', '0', '0'], ['E', 'X', '0', '0', 'X', 'X']]
+
+print(shooting_ships(s, 1))
+
+
+
