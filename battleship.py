@@ -54,7 +54,7 @@ def check_board(game_board, cor1, cor2, ship_size):
 def check_ship_untouched(game_board, right_coor, ship_size):
     #return True if no ship in range
     if len(right_coor) == 0:
-        return False
+        return -1
     
     #check horizontally
     elif right_coor[0][0] == right_coor[len(right_coor)-1][0]:
@@ -102,21 +102,25 @@ def place_ships(game_board, player, board_size):
         dict_of_ships = {"CARRIER": 5, "BATTLESHIP": 4, "CRUISER": 3, "SUBMARINE": 3, "DESTROYER": 2}
 
     while len(dict_of_ships) != 0:
-        print(1)
         display_board(game_board)
         coordinates_ships = input(f"Place your ships on board {str(dict_of_ships)} (example: CARRIER A1 A5): ").upper()
         coor_list = coordinates_ships.split(" ")
+
         while (coor_list[0] not in dict_of_ships.keys()) or len(coor_list) != 3:
             print("Invalid input!")
             coordinates_ships = input(f"Place your ships on board {str(dict_of_ships)} (example: CARRIER A1 A5): ").upper()
             coor_list = coordinates_ships.split(" ")
         
-        if not coor_list[1][1].isdigit() or not coor_list[2][1].isdigit():
-            continue
+        if not coor_list[1][1] in game_board[0][1:] or not coor_list[2][1] in game_board[0][1:]:
+            print("Invalid input!")
+        elif not coor_list[1][0] in [el[0] for el in game_board[1:]] or not coor_list[2][0] in [el[0] for el in game_board[1:]]:
+            print("Invalid input!")
         else:
             coor_to_check = check_board(game_board, coor_list[1], coor_list[2], dict_of_ships[coor_list[0]])
             if check_ship_untouched(game_board, coor_to_check, dict_of_ships[coor_list[0]]) == False:
                 print("Ships are too close!")
+            elif check_ship_untouched(game_board, coor_to_check, dict_of_ships[coor_list[0]]) == -1:
+                print("Ship is to long/short!")
             else:
                 for i in range(0, len(coor_to_check)):
                     game_board[coor_to_check[i][0]][coor_to_check[i][1]] = "X"
@@ -133,5 +137,3 @@ print(ss)
 print(check_ship_untouched(d, ss, 3)) """
 place_ships(s, 1, 5)
 print(s)
-
-
