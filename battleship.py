@@ -1,13 +1,8 @@
 import os
 import time
 import sys
-# 1. functrion init board for players(size)+
-# 2. place ship on board
-# 3. shooting phase displaye player number and board. valid correct input. mark hited field
 # 4. game_mode function setup game options(single/multi, board size, ship sizes and number)
 # 5. AI can play
-# 6. 5 ships lengte 5, 4, 3, 3, 2 +
-# 7. difrent numbers of ship in difrent size of board+
 def set_gameboard(board_size):
     #init board of various size
     game_board = []
@@ -161,15 +156,13 @@ def shooting_ships(game_board_display, player):
     
     return ord(ask_move[0]) - 64, int(ask_move[1])
 
-def check_sunk_ship(game_board_display, row, col):
+def check_sunk_ship(game_board_display, row, col, direct, setpup):
     #check the coords of sunk ship
     temp = []
     temp_2 = []
-    row_1 = row
-    row_2 = row
-    col_1 = col
-    while row > 0:
-        row -= 1
+    
+    while (col > 0 and col < len(game_board_display)) and (row > 0 and row < len(game_board_display)):
+        print(row, col)
         if game_board_display[row][col] == "0":
             break
         elif game_board_display[row][col] == "H":
@@ -177,38 +170,17 @@ def check_sunk_ship(game_board_display, row, col):
             temp_2.append([row, col])
         elif game_board_display[row][col] == "X":
             temp_2.append([row, col])
-    while row_1 < len(game_board_display) - 1:
-        row_1 += 1
-        if game_board_display[row_1][col] == "0":
-            break
-        elif game_board_display[row_1][col] == "H":
-            temp.append([row_1, col])
-            temp_2.append([row_1, col])
-        elif game_board_display[row_1][col] == "X":
-            temp_2.append([row_1, col])
-    while col > 0:
-        col -= 1
-        if game_board_display[row_2][col] == "0":
-            break
-        elif game_board_display[row_2][col] == "H":
-            temp.append([row_2, col])
-            temp_2.append([row_2, col])
-        elif game_board_display[row_2][col] == "X":
-            temp_2.append([row_2, col])
-    while col_1 < len(game_board_display) - 1:
-        col_1 += 1
-        if game_board_display[row_2][col_1] == "0":
-            break
-        if game_board_display[row_2][col_1] == "0":
-            break
-        elif game_board_display[row_2][col_1] == "H":
-            temp.append([row_2, col_1])
-            temp_2.append([row_2, col_1])
-        elif game_board_display[row_2][col_1] == "X":
-            temp_2.append([row_2, col-1])
-    
+            
+        if direct == "-" and setpup == "row":
+            row -= 1
+        elif direct == "+" and setpup == "row":
+            row += 1
+        elif direct == "-" and setpup == "col":
+            col -= 1
+        else:
+            col += 1
     if len(temp) != len(temp_2):
-        return -1
+        return []
     return temp
 
 def mark_move_on_board(game_board, game_board_display, player, row, col):
@@ -216,13 +188,14 @@ def mark_move_on_board(game_board, game_board_display, player, row, col):
     if game_board[row][col] == "X":
         game_board_display[row][col] = "H"
         game_board[row][col] = "H"
-        coords_of_sunk = check_sunk_ship(game_board, row, col)
-        if coords_of_sunk == -1:
+        coords_of_sunk = check_sunk_ship(game_board, row, col, "-", "row") + check_sunk_ship(game_board, row, col, "+", "row") + check_sunk_ship(game_board, row, col, "-", "col") +check_sunk_ship(game_board, row, col, "+", "col")
+        coords_of_sunk = set(tuple(i) for i in coords_of_sunk)
+        coords_of_sunk = list(coords_of_sunk)
+        if len(coords_of_sunk) == 1:
             print(f"Player {player}")
             display_board(game_board_display)
             print("You've hit a ship!")
         else:
-            game_board_display[row][col] = "S"
             game_board[row][col] = "H"
             for i in range(0, len(coords_of_sunk)):
                 game_board_display[coords_of_sunk[i][0]][coords_of_sunk[i][1]] = "S"
@@ -244,8 +217,8 @@ def has_won(game_board, player):
 if __name__ == '__main__':
     s = set_gameboard(5)
     
-    d = [[' ', '1', '2', '3', '4', '5'], ['A', 'X', 'H', 'X', '0', 'H'], ['B', '0', '0', '0', '0', '0'], ['C', 'X', '0', '0', '0', '0'], ['D', 'X', '0', '0', 'H', 'X'], ['E', 'X', '0', '0', '0', '0']]
-    g = [[' ', '1', '2', '3', '4', '5'], ['A', '0', 'H', 'X', '0', 'H'], ['B', '0', '0', '0', '0', '0'], ['C', 'X', '0', '0', '0', '0'], ['D', 'X', '0', '0', 'H', 'X'], ['E', 'X', '0', '0', '0', '0']]
+    d = [[' ', '1', '2', '3', '4', '5'], ['A', 'X', 'H', 'X', '0', 'H'], ['B', '0', '0', '0', '0', '0'], ['C', 'X', '0', '0', '0', '0'], ['D', 'H', '0', '0', 'H', 'X'], ['E', 'X', '0', '0', '0', '0']]
+    g = [[' ', '1', '2', '3', '4', '5'], ['A', '0', 'H', '0', '0', 'H'], ['B', '0', '0', '0', '0', '0'], ['C', '0', '0', '0', '0', '0'], ['D', 'H', '0', '0', 'H', 'X'], ['E', 'X', '0', '0', '0', '0']]
     #print(shooting_ships(s, 1))
 
     
