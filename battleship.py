@@ -162,7 +162,6 @@ def check_sunk_ship(game_board_display, row, col, direct, setpup):
     temp_2 = []
     
     while (col > 0 and col < len(game_board_display)) and (row > 0 and row < len(game_board_display)):
-        print(row, col)
         if game_board_display[row][col] == "0":
             break
         elif game_board_display[row][col] == "H":
@@ -170,7 +169,7 @@ def check_sunk_ship(game_board_display, row, col, direct, setpup):
             temp_2.append([row, col])
         elif game_board_display[row][col] == "X":
             temp_2.append([row, col])
-            
+
         if direct == "-" and setpup == "row":
             row -= 1
         elif direct == "+" and setpup == "row":
