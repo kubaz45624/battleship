@@ -2,7 +2,6 @@ import os
 import time
 import sys
 
-# 5. AI can play
 def set_gameboard(board_size):
     #init board of various size
     game_board = []
