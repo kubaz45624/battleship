@@ -1,7 +1,7 @@
 import os
 import time
 import sys
-# 4. game_mode function setup game options(single/multi, board size, ship sizes and number)
+
 # 5. AI can play
 def set_gameboard(board_size):
     #init board of various size
