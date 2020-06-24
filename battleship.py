@@ -165,16 +165,12 @@ def check_sunk_ship(game_board_display, row, col, direct, setpup):
             temp.append([row, col])
 
         if direct == "-" and setpup == "row":
-            print(1)
             row -= 1
         elif direct == "+" and setpup == "row":
-            print(2)
             row += 1
         elif direct == "-" and setpup == "col":
-            print(3)
             col -= 1
         else:
-            print(4)
             col += 1
     
     return list(temp)
@@ -219,12 +215,12 @@ def has_won(game_board, player):
 if __name__ == '__main__':
     s = set_gameboard(5)
     
-    d = [[' ', '1', '2', '3', '4', '5'], ['A', 'X', '0', '0', '0', 'H'], ['B', 'X', '0', '0', '0', '0'], ['C', 'X', '0', '0', '0', '0'], ['D', '0', '0', '0', 'H', 'X'], ['E', 'X', '0', '0', '0', '0']]
+    d = [[' ', '1', '2', '3', '4', '5'], ['A', 'X', '0', '0', '0', 'H'], ['B', 'X', 'X', 'X', '0', '0'], ['C', 'X', '0', '0', '0', '0'], ['D', '0', '0', '0', 'H', 'X'], ['E', 'X', '0', '0', '0', '0']]
     g = [[' ', '1', '2', '3', '4', '5'], ['A', '0', '0', '0', '0', 'H'], ['B', 'H', '0', '0', '0', '0'], ['C', '0H', '0', '0', '0', '0'], ['D', '0', '0', '0', 'H', 'X'], ['E', 'X', '0', '0', '0', '0']]
     #print(shooting_ships(s, 1))
 
     
-    mark_move_on_board(d, g, 2, 3, 1)
+    print(check_ship_untouched(d, check_board(d, "C3", "C4", 2), 2))
 
 
 
