@@ -117,8 +117,13 @@ if __name__ == '__main__':
     for i in range(0, len(s)):
         print(colorama.Fore.RED + " ".join(s[i]) + colorama.Style.RESET_ALL) """
     g = [[' ', '1', '2', '3', '4', '5'], ['A', 'H', 'X', 'H', '0', '0'], ['B', '0', 'M', '0', '0', '0'], ['C', '0', '0', '0', '0', '0'], ['D', '0', '0', '0', '0', '0'], ['E', '0', '0', '0', '0', '0']]
-    ai_shot_ships(d, g)
+    """ ai_shot_ships(d, g)
     for i in range(0, len(d)):
-        print(colorama.Fore.RED + " ".join(d[i]) + colorama.Style.RESET_ALL)
+        print(colorama.Fore.RED + " ".join(d[i]) + colorama.Style.RESET_ALL) """
+    s = colorama.Fore.RED + "asd" + colorama.Style.RESET_ALL
+
+    f = ["ASd", s, "dsa"]
+    h =  colorama.Fore.RED + "asd" + colorama.Style.RESET_ALL
+    print(s in f)
 
     
