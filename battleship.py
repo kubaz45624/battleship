@@ -1,6 +1,12 @@
 import os
 import time
 import sys
+import colorama
+x_mark = colorama.Fore.GREEN + "X" + colorama.Style.RESET_ALL
+h_mark = colorama.Fore.LIGHTRED_EX + "H" + colorama.Style.RESET_ALL
+s_mark = colorama.Fore.RED + "S" + colorama.Style.RESET_ALL
+o_mark = colorama.Fore.LIGHTBLUE_EX + "0" + colorama.Style.RESET_ALL
+m_mark = colorama.Fore.BLUE + "M" + colorama.Style.RESET_ALL
 
 def set_gameboard(board_size):
     #init board of various size
@@ -15,7 +21,7 @@ def set_gameboard(board_size):
                     game_board[i].append(" ")
             else:
                 if j != 0:
-                    game_board[i].append("0")
+                    game_board[i].append(o_mark)
                 else:
                     game_board[i].append(chr(i + 64))
     return game_board
@@ -36,13 +42,13 @@ def check_board(game_board, cor1, cor2, ship_size):
     #check horizontally
     if cor1[0] == cor2[0]:
         if (cor1[1] + ship_size - 1 == cor2[1]) or (cor2[1] + ship_size - 1 == cor1[1]):
-            if ("".join(game_board[cor1[0]][cor1[1]: (cor2[1]+1)]) == "0" * ship_size) or ("".join(game_board[cor1[0]][cor2[1]: (cor1[1]+1)]) == "0" * ship_size):
+            if ("".join(game_board[cor1[0]][cor1[1]: (cor2[1]+1)]) == o_mark * ship_size) or ("".join(game_board[cor1[0]][cor2[1]: (cor1[1]+1)]) == o_mark * ship_size):
                 for i in range(min(cor1[1], cor2[1]), max(cor1[1], cor2[1])+1):
                     right_coor.append([cor1[0], i])
     #check vertical
     elif cor1[1] == cor2[1]:
         if (cor1[0] + ship_size - 1 == cor2[0]) or (cor2[0] + ship_size - 1 == cor1[0]):
-            if ("".join([el[cor1[1]] for el in game_board[cor1[0]:(cor2[0]+1)]]) == "0" * ship_size) or ("".join([el[cor1[1]] for el in game_board[cor2[0]:(cor1[0]+1)]]) == "0" * ship_size):
+            if ("".join([el[cor1[1]] for el in game_board[cor1[0]:(cor2[0]+1)]]) == o_mark * ship_size) or ("".join([el[cor1[1]] for el in game_board[cor2[0]:(cor1[0]+1)]]) == o_mark * ship_size):
                 for i in range(min(cor1[0], cor2[0]), max(cor1[0], cor2[0])+1):
                     right_coor.append([i, cor1[1]])
 
@@ -56,36 +62,36 @@ def check_ship_untouched(game_board, right_coor, ship_size):
     #check horizontally
     elif right_coor[0][0] == right_coor[len(right_coor)-1][0]:
         if right_coor[0][0] == 1:
-            if "".join(game_board[right_coor[0][0]+1][right_coor[0][1]:right_coor[len(right_coor)-1][1]+1]) != "0" * ship_size:
+            if "".join(game_board[right_coor[0][0]+1][right_coor[0][1]:right_coor[len(right_coor)-1][1]+1]) != o_mark * ship_size:
                 return False
         elif right_coor[0][0] == len(game_board) - 1:
-            if "".join(game_board[right_coor[0][0]-1][right_coor[0][1]:right_coor[len(right_coor)-1][1]+1]) != "0" * ship_size:
+            if "".join(game_board[right_coor[0][0]-1][right_coor[0][1]:right_coor[len(right_coor)-1][1]+1]) != o_mark * ship_size:
                 return False
         else:
-            if "".join(game_board[right_coor[0][0]-1][right_coor[0][1]:right_coor[len(right_coor)-1][1]+1]) != "0" * ship_size or "".join(game_board[right_coor[0][0]+1][right_coor[0][1]:right_coor[len(right_coor)-1][1]+1]) != "0" * ship_size:
+            if "".join(game_board[right_coor[0][0]-1][right_coor[0][1]:right_coor[len(right_coor)-1][1]+1]) != o_mark * ship_size or "".join(game_board[right_coor[0][0]+1][right_coor[0][1]:right_coor[len(right_coor)-1][1]+1]) != o_mark * ship_size:
                 return False
 
-        if right_coor[0][1] != 1 and game_board[right_coor[0][0]][right_coor[0][1]-1] == "X":
+        if right_coor[0][1] != 1 and game_board[right_coor[0][0]][right_coor[0][1]-1] == x_mark:
             return False
 
-        if (right_coor[len(right_coor)-1][1] != len(game_board) - 1) and game_board[right_coor[0][0]][right_coor[len(right_coor)-1][1]+1] == "X":
+        if (right_coor[len(right_coor)-1][1] != len(game_board) - 1) and game_board[right_coor[0][0]][right_coor[len(right_coor)-1][1]+1] == x_mark:
             return False
     #check vertical
     else:
         if right_coor[0][1] == 1:
-            if "".join([el[right_coor[0][1]+1] for el in game_board[right_coor[0][0]:(right_coor[len(right_coor)-1][0]+1)]]) != "0" * ship_size:
+            if "".join([el[right_coor[0][1]+1] for el in game_board[right_coor[0][0]:(right_coor[len(right_coor)-1][0]+1)]]) != o_mark * ship_size:
                 return False
         elif right_coor[0][1] == len(game_board) - 1:
-            if "".join([el[right_coor[0][1]-1] for el in game_board[right_coor[0][0]:(right_coor[len(right_coor)-1][0]+1)]]) != "0" * ship_size:
+            if "".join([el[right_coor[0][1]-1] for el in game_board[right_coor[0][0]:(right_coor[len(right_coor)-1][0]+1)]]) != o_mark * ship_size:
                 return False
         else:
-            if "".join([el[right_coor[0][1]-1] for el in game_board[right_coor[0][0]:(right_coor[len(right_coor)-1][0]+1)]]) != "0" * ship_size or "".join([el[right_coor[0][1]+1] for el in game_board[right_coor[0][0]:(right_coor[len(right_coor)-1][0]+1)]]) != "0" * ship_size:
+            if "".join([el[right_coor[0][1]-1] for el in game_board[right_coor[0][0]:(right_coor[len(right_coor)-1][0]+1)]]) != o_mark * ship_size or "".join([el[right_coor[0][1]+1] for el in game_board[right_coor[0][0]:(right_coor[len(right_coor)-1][0]+1)]]) != o_mark * ship_size:
                 return False
         
-        if right_coor[0][0] != 1 and game_board[right_coor[0][0]-1][right_coor[0][1]] == "X":
+        if right_coor[0][0] != 1 and game_board[right_coor[0][0]-1][right_coor[0][1]] == x_mark:
             return False
         
-        if right_coor[len(right_coor)-1][0] != len(game_board) - 1 and game_board[right_coor[len(right_coor)-1][0]+1][right_coor[0][1]] == "X":
+        if right_coor[len(right_coor)-1][0] != len(game_board) - 1 and game_board[right_coor[len(right_coor)-1][0]+1][right_coor[0][1]] == x_mark:
             return False
     return True
 
@@ -129,14 +135,14 @@ def place_ships(game_board, player, board_size):
                 print("Ship is to long/short!")
             else:
                 for i in range(0, len(coor_to_check)):
-                    game_board[coor_to_check[i][0]][coor_to_check[i][1]] = "X"
+                    game_board[coor_to_check[i][0]][coor_to_check[i][1]] = x_mark
                 dict_of_ships.pop(coor_list[0])
 
 def shooting_ships(game_board_display, player):
     possible_moves = []
     for i in range(0, len(game_board_display)):
         for j in range(0, len(game_board_display[i])):
-            if game_board_display[i][j] == "0":
+            if game_board_display[i][j] == o_mark:
                 possible_moves.append(f"{chr(i + 64)}{j}")
     print(f"Player {player}")
     display_board(game_board_display)
@@ -159,9 +165,9 @@ def check_sunk_ship(game_board_display, row, col, direct, setpup):
     #check the coords of sunk ship
     temp = []
     while (col > 0 and col < len(game_board_display)) and (row > 0 and row < len(game_board_display)):
-        if game_board_display[row][col] == "0":
+        if game_board_display[row][col] == o_mark:
             break
-        elif game_board_display[row][col] == "X" or game_board_display[row][col] == "H":
+        elif game_board_display[row][col] == x_mark or game_board_display[row][col] == h_mark:
             temp.append([row, col])
 
         if direct == "-" and setpup == "row":
@@ -179,9 +185,9 @@ def mark_move_on_board(game_board, game_board_display, player, row, col):
     #mark move on game board
     time.sleep(1)
     os.system("cls")
-    if game_board[row][col] == "X":
-        game_board_display[row][col] = "H"
-        game_board[row][col] = "H"
+    if game_board[row][col] == x_mark:
+        game_board_display[row][col] = h_mark
+        game_board[row][col] = h_mark
         coords_of_sunk = check_sunk_ship(game_board, row, col, "-", "row") + check_sunk_ship(game_board, row, col, "+", "row") + check_sunk_ship(game_board, row, col, "-", "col") +check_sunk_ship(game_board, row, col, "+", "col")
         coords_of_sunk = set(tuple(i) for i in coords_of_sunk)
         coords_of_sunk = list(coords_of_sunk)
@@ -194,21 +200,21 @@ def mark_move_on_board(game_board, game_board_display, player, row, col):
             display_board(game_board_display)
             print("You've hit a ship!")
         else:
-            game_board[row][col] = "H"
+            game_board[row][col] = h_mark
             for i in range(0, len(coords_of_sunk)):
-                game_board_display[coords_of_sunk[i][0]][coords_of_sunk[i][1]] = "S"
+                game_board_display[coords_of_sunk[i][0]][coords_of_sunk[i][1]] = s_mark
             print(f"Player {player}")
             display_board(game_board_display)
             print("You've sunk a ship!")     
     else:
-        game_board_display[row][col] = "M"
+        game_board_display[row][col] = m_mark
         print(f"Player {player}")
         display_board(game_board_display)
         print("You've missed!")
     
 def has_won(game_board, player):
     for i in range(0, len(game_board)):
-        if "X" in game_board[i]:
+        if x_mark in game_board[i]:
             return False
     return True
 
@@ -220,7 +226,8 @@ if __name__ == '__main__':
     #print(shooting_ships(s, 1))
 
     
-    mark_move_on_board(g, d, 1, 1, 2)
-
+    s = set_gameboard(5)
+    place_ships(s, 1, 5)
+    display_board(s)
 
 
