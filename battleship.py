@@ -194,7 +194,6 @@ def mark_move_on_board(game_board, game_board_display, player, row, col):
         cors_2 = check_sunk_ship(game_board_display, row, col, "-", "row") + check_sunk_ship(game_board_display, row, col, "+", "row") + check_sunk_ship(game_board_display, row, col, "-", "col") +check_sunk_ship(game_board_display, row, col, "+", "col")
         cors_2 = set(tuple(i) for i in cors_2)
         cors_2 = list(cors_2)
-        print(len(coords_of_sunk), len(cors_2))
         if len(coords_of_sunk) != len(cors_2):
             print(f"Player {player}")
             display_board(game_board_display)

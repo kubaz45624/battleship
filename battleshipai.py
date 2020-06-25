@@ -3,6 +3,12 @@ import random
 import battleship
 import colorama
 import time
+import os
+x_mark = colorama.Fore.GREEN + "X" + colorama.Style.RESET_ALL
+h_mark = colorama.Fore.LIGHTRED_EX + "H" + colorama.Style.RESET_ALL
+s_mark = colorama.Fore.RED + "S" + colorama.Style.RESET_ALL
+o_mark = colorama.Fore.LIGHTBLUE_EX + "0" + colorama.Style.RESET_ALL
+m_mark = colorama.Fore.BLUE + "M" + colorama.Style.RESET_ALL
 
 
 def check_ends(game_board, coors, ship_size, possible_moves, s = 1):
@@ -31,7 +37,7 @@ def ai_place_ship(game_board, board_size):
     possible_moves = []
     for i in range(0, len(game_board)):
         for j in range(0, len(game_board[i])):
-            if game_board[i][j] == "0":
+            if game_board[i][j] == o_mark:
                 possible_moves.append([i, j])
 
     for i in dict_of_ships.keys():
@@ -44,16 +50,16 @@ def ai_place_ship(game_board, board_size):
             s = battleship.check_board(game_board, f"{chr(random_choose[0]+64)}{random_choose[1]}", f"{chr(random_end_chose[0]+64)}{random_end_chose[1]}", dict_of_ships[i])
 
         for i in range(0, len(s)):
-            game_board[s[i][0]][s[i][1]] = "X"
+            game_board[s[i][0]][s[i][1]] = x_mark
             possible_moves.remove(s[i])
 
 def chcec_for_next_hit(game_board_display, row, col, direct, setup):
     temp = []
     while (col > 0 and col < len(game_board_display)) and (row > 0 and row < len(game_board_display)):
-        if game_board_display[row][col] == "0":
+        if game_board_display[row][col] == o_mark:
             temp.append([row, col])
             break
-        elif game_board_display[row][col] == "M":
+        elif game_board_display[row][col] == m_mark:
             break
 
         if direct == "-" and setup == "row":
@@ -67,18 +73,20 @@ def chcec_for_next_hit(game_board_display, row, col, direct, setup):
     return temp
 
 def ai_shot_ships(game_board_display, game_board):
+    battleship.display_board(game_board_display)
+    time.sleep(1)
     possible_moves = []
     hit_shots = []
     for i in range(0, len(game_board_display)):
         for j in range(0, len(game_board_display[i])):
-            if game_board_display[i][j] == "0":
+            if game_board_display[i][j] == o_mark:
                 possible_moves.append([i, j])
-            elif game_board_display[i][j] == "H":
+            elif game_board_display[i][j] == h_mark:
                 hit_shots.append([i, j])
     #remove field next to sunken ship
     for i in range(0, len(game_board_display)):
         for j in range(0, len(game_board_display[i])):
-            if game_board_display[i][j] == "S":
+            if game_board_display[i][j] == s_mark:
                 if [i+1, j] in possible_moves:
                     possible_moves.remove([i+1, j])
                 if [i-1, j] in possible_moves:
@@ -90,19 +98,23 @@ def ai_shot_ships(game_board_display, game_board):
     
     if len(hit_shots) == 0:
         random_free = random.choice(possible_moves)
+        os.system("cls")
         battleship.mark_move_on_board(game_board, game_board_display, "computer", random_free[0], random_free[1])
     elif len(hit_shots) == 1:
         next_hit = check_ends(game_board_display, hit_shots[0], 1, possible_moves, s = 0)
         next_hit_random = random.choice(next_hit)
+        os.system("cls")
         battleship.mark_move_on_board(game_board, game_board_display, "computer", next_hit_random[0], next_hit_random[1])
     else:
         if hit_shots[0][0] == hit_shots[1][0]:
             possible_hits = chcec_for_next_hit(game_board_display, hit_shots[0][0], hit_shots[0][1], "+", "col") + chcec_for_next_hit(game_board_display, hit_shots[0][0], hit_shots[0][1], "-", "col")
             possible_hits_random = random.choice(possible_hits)
+            os.system("cls")
             battleship.mark_move_on_board(game_board, game_board_display, "computer", possible_hits_random[0], possible_hits_random[1])
         else:
             possible_hits = chcec_for_next_hit(game_board_display, hit_shots[0][0], hit_shots[0][1], "+", "row") + chcec_for_next_hit(game_board_display, hit_shots[0][0], hit_shots[0][1], "-", "row")
             possible_hits_random = random.choice(possible_hits)
+            os.system("cls")
             battleship.mark_move_on_board(game_board, game_board_display, "computer", possible_hits_random[0], possible_hits_random[1])
 
 
