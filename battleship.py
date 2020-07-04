@@ -2,6 +2,7 @@ import os
 import time
 import sys
 import colorama
+
 x_mark = colorama.Fore.GREEN + "X" + colorama.Style.RESET_ALL
 h_mark = colorama.Fore.LIGHTRED_EX + "H" + colorama.Style.RESET_ALL
 s_mark = colorama.Fore.RED + "S" + colorama.Style.RESET_ALL
@@ -103,6 +104,7 @@ def place_ships(game_board, player, board_size):
         dict_of_ships = {"BATTLESHIP": 4, "CRUISER": 3, "SUBMARINE": 3, "DESTROYER": 2}
     else:
         dict_of_ships = {"CARRIER": 5, "BATTLESHIP": 4, "CRUISER": 3, "SUBMARINE": 3, "DESTROYER": 2}
+
     #keep asking till ship in dict_of_ships
     while len(dict_of_ships) != 0:
         time.sleep(1)
@@ -111,6 +113,7 @@ def place_ships(game_board, player, board_size):
         display_board(game_board)
         coordinates_ships = input(f"Place your ships on board {str(dict_of_ships)} (example: CARRIER A1 A5): ").upper()
         coor_list = coordinates_ships.split(" ")
+
         #keep asking if incorrect ship name or wrong entered
         while (coor_list[0] not in dict_of_ships.keys()) or len(coor_list) != 3:
             print("Invalid input!")
@@ -216,6 +219,7 @@ def has_won(game_board, player):
         if x_mark in game_board[i]:
             return False
     return True
+
 
 if __name__ == '__main__':
     s = set_gameboard(5)
